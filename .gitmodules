@@ -1,0 +1,3 @@
+[submodule "ansible/roles/riak"]
+	path = ansible/roles/riak
+	url = https://github.com/basho-labs/ansible-riak.git
