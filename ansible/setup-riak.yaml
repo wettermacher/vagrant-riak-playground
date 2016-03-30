@@ -1,0 +1,6 @@
+---
+
+- hosts: riak
+  become: yes
+  roles:
+  - econda-riak 

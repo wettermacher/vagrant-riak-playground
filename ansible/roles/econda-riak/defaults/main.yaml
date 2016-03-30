@@ -1,0 +1,4 @@
+---
+
+riak_backend: leveldb
+riak_node_name:     'riak@{{ ansible_default_ipv4.address }}'
