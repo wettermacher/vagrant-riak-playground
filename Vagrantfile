@@ -23,7 +23,7 @@ Vagrant.configure(2) do |config|
       
       node.vm.provider "virtualbox" do |vb|
         # create device for riak data
-        disk = './virtualbox/disks/riak-data#{i}.vdi'
+        disk = "./virtualbox/disks/riak-data#{i}.vdi"
         unless File.exist?(disk)
             vb.customize ['createhd', '--filename', disk, '--size', 1 * 1024]
         end
