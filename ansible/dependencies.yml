@@ -1,1 +1,4 @@
-- src: basho-labs.riak-kv
+# use github version due to a bug in current release version
+# - src: basho-labs.riak-kv
+- src: https://github.com/basho-labs/ansible-riak
+  name: basho-labs.riak-kv

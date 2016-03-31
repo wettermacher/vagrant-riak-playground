@@ -1,5 +1,6 @@
 ---
 dependencies:
+  - role: riak-data-filesystem
   - role: basho-labs.riak-kv
     riak_backend: leveldb
     riak_node_name: 'riak@{{ ansible_default_ipv4.address }}'
