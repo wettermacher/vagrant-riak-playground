@@ -11,6 +11,7 @@
   tasks:
     - name: Join the cluster
       riak: command=join target_node={{ ring_leader }}
+      when: inventory_hostname != riak_ring_leader_host
 
     - name: Check Riak Ring
       command: 'riak-admin cluster status'
