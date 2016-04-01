@@ -4,11 +4,11 @@
   apt: name=btrfs-tools
   
 - name: "Check if filesystem on {{ riak_data_devices[0] }} is already created"
-  shell: "btrfs filesystem show {{ riak_data_devices[0] }} | grep {{ riak_data_devices[0] }}"
+  shell: "btrfs filesystem show {{ riak_data_devices[0] }}"
   register: fscheck_result
 - name: "Create BtrFS file system on devices {{ riak_data_devices|join(' ') }}"
   command: "mkfs.btrfs {{ riak_data_devices|join(' ') }}"
-  when: fscheck_result|failed
+  when: fscheck_result.stdout.find(riak_data_devices[0]) == -1
   
 # we should use riak tune_disks tasks instead
 - name: "Mount BtrFS file system at {{ riak_data_mountpoint }}"
