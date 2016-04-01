@@ -2,7 +2,7 @@
 apt-add-repository -y ppa:ansible/ansible
 apt-get -q update
 
-apt-get -y install git-core software-properties-common ansible mysql-client
+apt-get -y install git-core software-properties-common ansible
 
 # access to vagrant test hosts
 cp /vagrant/vagrant/files/ssh/id_rsa /home/vagrant/.ssh/id_rsa
