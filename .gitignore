@@ -1,3 +1,5 @@
 .vagrant
 *.retry
 *.vdi
+
+/test-client/bench/tests/

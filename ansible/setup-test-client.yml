@@ -26,5 +26,11 @@
       get_url: url=http://ps-tools.s3.amazonaws.com/basho-bench_0.10.0.53.g0e15158-ubuntu14.04LTS-1_amd64.deb dest=/tmp/basho-bench.deb
     - name: Install basho bench
       apt: deb="/tmp/basho-bench.deb"
-    - name: Install r 
-      apt: name=r-base
+    - name: Install R and packages required for basho_bench
+      apt: name={{ item }}
+        - r-base
+        - r-base-dev
+        - r-cran-plyr
+        - r-cran-getopt
+        - r-cran-proto
+        - r-cran-ggplot2

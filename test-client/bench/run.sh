@@ -15,8 +15,9 @@ cp $CONFIGFILE ${TESTDIR}/tmp.config
 rm -R ${RESULTSDIR}/*
 
 cd $TESTDIR
-basho_bench --results-dir ${TESTDIR}/ ${TESTDIR}/tmp.config
+basho_bench --results-dir ${RESULTSDIR}/ ${TESTDIR}/tmp.config
+Rscript --vanilla /usr/lib/basho_bench/lib/basho_bench*/priv/summary.r -i ${RESULTSDIR}/current
 
 # copy results back
 mkdir -p ${SCRIPTPATH}/tests
-cp -R ${RESULTSDIR} ${SCRIPTPATH}/tests
+cp -Lr ${RESULTSDIR}/* ${SCRIPTPATH}/tests/
