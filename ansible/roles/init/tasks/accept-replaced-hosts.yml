@@ -1,0 +1,8 @@
+---
+
+- set_fact: ssh_known_hosts_file="/home/vagrant/.ssh/known_hosts"
+- stat: "path={{ ssh_known_hosts_file }}"
+  register: ssh_known_hosts_file_stat
+- name: Remove host from SSH
+  local_action: 'command ssh-keygen -f "{{ ssh_known_hosts_file }}" -R {{ inventory_hostname }}'
+  when: ssh_known_hosts_file_stat.stat.exists is defined and ssh_known_hosts_file_stat.stat.exists
