@@ -5,6 +5,8 @@
 
 [riak:vars]
 riak_ring_leader_host=192.168.50.11
+riak_ring_size=3
+riak_control=on
 
 [riak-test-client]
 192.168.50.100 ansible_user=ansible
