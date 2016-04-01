@@ -4,5 +4,22 @@
   become: yes
   gather_facts: no
   roles:
-  - init
-  - riak-server
+    - init
+    - riak-server
+  vars:
+    ring_leader: "riak@{{ riak_ring_leader_host }}"
+  tasks:
+    - name: Join the cluster
+      riak: command=join target_node={{ ring_leader }}
+
+    - name: Check Riak Ring
+      command: 'riak-admin cluster status'
+      register: riak_ring_status
+
+    - name: Plan the cluster
+      riak: command=plan wait_for_ring=300
+      when: riak_ring_status.stdout.find('joining') > 0
+
+    - name: Commit the cluster
+      riak: command=commit wait_for_handoffs=300
+      when: riak_ring_status.stdout.find('joining') > 0
