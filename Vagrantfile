@@ -34,4 +34,16 @@ Vagrant.configure(2) do |config|
     end
   end
   
+  config.vm.define "client" do |client|
+    client.vm.box = "ubuntu/trusty64"
+    client.vm.network "private_network", ip: "192.168.50.100"
+    
+    client.vm.provider "virtualbox" do |vb|
+      vb.memory = 3072
+      vb.cpus = 1
+    end
+    
+    client.vm.provision "shell", path: "vagrant/setup-client-host.sh"
+  end
+  
 end
