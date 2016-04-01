@@ -1,0 +1,20 @@
+---
+
+- hosts: riak-test-client
+  become: yes
+  tasks:
+    - name: Download bash bench
+      get_url: src=http://ps-tools.s3.amazonaws.com/basho-bench_0.10.0.53.g0e15158-ubuntu14.04LTS-1_amd64.deb dest=/tmp/basho-bench.deb
+    - name: Install ansible pip module dependencies
+      apt: name={{ item }}
+      with_items:
+        - build-essential
+        - libssl-dev
+        - libffi-dev
+        - python3-dev
+        - python3-pip
+    - name: Install riak client for python
+      command: pip3 install {{ item }}
+      with_items:
+        - cryptography
+        - riak
