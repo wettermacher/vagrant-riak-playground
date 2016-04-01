@@ -3,8 +3,8 @@
 - hosts: riak-test-client
   become: yes
   tasks:
-    - name: Download bash bench
-      get_url: src=http://ps-tools.s3.amazonaws.com/basho-bench_0.10.0.53.g0e15158-ubuntu14.04LTS-1_amd64.deb dest=/tmp/basho-bench.deb
+  
+  # Install requirements for python test scripts
     - name: Install ansible pip module dependencies
       apt: name={{ item }}
       with_items:
@@ -18,3 +18,13 @@
       with_items:
         - cryptography
         - riak
+        
+# Install basho bench tool
+    - name: Install some usefull utitlities for basho_bench
+      apt: name=realpath
+    - name: Download basho bench
+      get_url: url=http://ps-tools.s3.amazonaws.com/basho-bench_0.10.0.53.g0e15158-ubuntu14.04LTS-1_amd64.deb dest=/tmp/basho-bench.deb
+    - name: Install basho bench
+      apt: deb="/tmp/basho-bench.deb"
+    - name: Install r 
+      apt: name=r-base
