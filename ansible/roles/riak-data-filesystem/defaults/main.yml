@@ -2,3 +2,4 @@
 riak_data_devices:
   - "/dev/sdb"
 riak_data_mountpoint: /var/lib/riak
+riak_data_volume_size: 500m

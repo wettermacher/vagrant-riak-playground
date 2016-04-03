@@ -1,16 +1,30 @@
 ---
 
-- name: Install BtrFS Tools
-  apt: name=btrfs-tools
-  
-- name: "Check if filesystem on {{ riak_data_devices[0] }} is already created"
-  shell: "btrfs filesystem show {{ riak_data_devices[0] }}"
-  register: fscheck_result
-- name: "Create BtrFS file system on devices {{ riak_data_devices|join(' ') }}"
-  command: "mkfs.btrfs {{ riak_data_devices|join(' ') }}"
-  when: fscheck_result.stdout.find(riak_data_devices[0]) == -1
-  
-# we should use riak tune_disks tasks instead
-- name: "Mount BtrFS file system at {{ riak_data_mountpoint }}"
-  mount: "src={{ riak_data_devices[0] }} name={{ riak_data_mountpoint }} opts=ssd fstype=btrfs state=mounted"
+- name: Install lvm and xfs tools
+  apt: name={{ item }}
+  with_items:
+    - xfsprogs 
+    - xfsdump 
+    - lvm2
+    
+- name: create lvm pysical volumes
+  command: "pvcreate {{ item }}"
+  with_items: "{{ riak_data_devices }}"
+  ignore_errors: yes
+- name: check if volume group is already created
+  command: vgs
+  register: vgs
+- name: create lvm volume group
+  command: "vgcreate riak-data-lvg {{ riak_data_devices|join(' ') }}"
+  ignore_errors: yes
+- name: create lvm logical volume
+  command: "lvcreate -n riak-volume -L {{ riak_data_volume_size }} riak-data-lvg"
+  ignore_errors: yes
+- name: create mountpoint
+  command: "mkdir -p {{ riak_data_mountpoint }}"
+- name: make xfs filesystem
+  command: mkfs.xfs /dev/riak-data-lvg/riak-volume
+  ignore_errors: yes
+- name: mount riak data volume
+  mount: "src=/dev/riak-data-lvg/riak-volume fstype=xfs name={{ riak_data_mountpoint }} state=mounted"
   
