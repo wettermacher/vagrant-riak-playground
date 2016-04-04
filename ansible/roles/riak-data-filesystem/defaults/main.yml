@@ -1,5 +1,8 @@
 ---
 riak_data_devices:
   - "/dev/sdb"
+riak_data_lvg: data-lvg
+riak_data_lv: riak-data
+riak_data_filesystem: xfs
 riak_data_mountpoint: /var/lib/riak
 riak_data_volume_size: 500m

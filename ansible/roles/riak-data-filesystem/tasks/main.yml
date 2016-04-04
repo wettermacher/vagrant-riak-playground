@@ -6,25 +6,13 @@
     - xfsprogs 
     - xfsdump 
     - lvm2
-    
-- name: create lvm pysical volumes
-  command: "pvcreate {{ item }}"
-  with_items: "{{ riak_data_devices }}"
-  ignore_errors: yes
-- name: check if volume group is already created
-  command: vgs
-  register: vgs
+
 - name: create lvm volume group
-  command: "vgcreate riak-data-lvg {{ riak_data_devices|join(' ') }}"
-  ignore_errors: yes
+  lvg: "vg={{ riak_data_lvg }} pvs={{ riak_data_devices|join(',') }}"
 - name: create lvm logical volume
-  command: "lvcreate -n riak-volume -L {{ riak_data_volume_size }} riak-data-lvg"
-  ignore_errors: yes
-- name: create mountpoint
-  command: "mkdir -p {{ riak_data_mountpoint }}"
-- name: make xfs filesystem
-  command: mkfs.xfs /dev/riak-data-lvg/riak-volume
-  ignore_errors: yes
+  lvol: "vg={{ riak_data_lvg }} size={{ riak_data_volume_size }} lv={{ riak_data_lv }}"
+- name: make {{ riak_data_filesystem }} filesystem
+  filesystem: "fstype={{ riak_data_filesystem }} dev=/dev/{{ riak_data_lvg }}/{{ riak_data_lv }}"
 - name: mount riak data volume
-  mount: "src=/dev/riak-data-lvg/riak-volume fstype=xfs name={{ riak_data_mountpoint }} state=mounted"
+  mount: "src=/dev/{{ riak_data_lvg }}/{{ riak_data_lv }} fstype=xfs name={{ riak_data_mountpoint }} state=mounted"
   
