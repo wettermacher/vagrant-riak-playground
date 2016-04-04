@@ -1,0 +1,14 @@
+---
+
+- hosts: riak
+  become: yes
+  gather_facts: no
+  roles:
+    - init
+  tasks:
+  - name: Unmount snapshot volume
+    mount: "src=/dev/data-lvg/backup_snapshot fstype=xfs name=/backup/snapshot state=absent"
+    ignore_errors: yes
+  - name: Delete snapshot volume
+    command: lvremove -f /dev/data-lvg/backup_snapshot
+    ignore_errors: yes

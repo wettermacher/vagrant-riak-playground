@@ -3,8 +3,32 @@
 - hosts: riak
   become: yes
   gather_facts: no
+  serial: 1
   roles:
     - init
   tasks:
+  - name: Stop riak service
+    service: name=riak state=stopped
   - name: Create snapshot of data directory
-    command: btrfs subvolume snapshot /var/lib/riak /var/lib/riak/backup_snapshot
+    command: lvcreate --size=500M --snapshot --name=backup_snapshot /dev/data-lvg/riak-data
+  - name: Start riak service
+    service: name=riak state=started
+  - name: Mount snapshot 
+    mount: "src=/dev/data-lvg/backup_snapshot fstype=xfs name=/backup/snapshot state=mounted opts=nouuid,ro"
+    
+- hosts: riak
+  become: yes
+  strategy: free
+  tasks:
+  - name: Make sure backup directory exists
+    file: path=/backup/current state=directory mode=0755
+  - name: Write info, that sync is running
+    file: path=/backup/current/SYNC_IS_RUNNING state=touch owner=root group=root mode=0755
+  - name: Rsync snapshot data with backup copy
+    command: rsync -a /backup/snapshot /backup/current
+  - name: Mark as synced
+    file: path=/backup/current/SYNC_IS_RUNNING state=absent
+  - name: Unmount snapshot volume
+    mount: "src=/dev/data-lvg/backup_snapshot fstype=xfs name=/backup/snapshot state=absent"
+  - name: Remove snapshot
+    command: lvremove -f /dev/data-lvg/backup_snapshot
