@@ -28,6 +28,7 @@
       apt: deb="/tmp/basho-bench.deb"
     - name: Install R and packages required for basho_bench
       apt: name={{ item }}
+      with_items:
         - r-base
         - r-base-dev
         - r-cran-plyr
